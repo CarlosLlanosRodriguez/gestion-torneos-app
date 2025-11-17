@@ -56,11 +56,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  // Getters para acceder fácilmente a los controles del formulario
-  get f() {
-    return this.loginForm.controls;
-  }
-
   // Maneja el envío del formulario
   onSubmit(): void {
     // Marcar todos los campos como touched para mostrar errores
@@ -76,8 +71,8 @@ export class LoginComponent implements OnInit {
 
     // Obtener credenciales del formulario
     const credentials = {
-      email: this.f['email'].value,
-      password: this.f['password'].value
+      email: this.loginForm.controls['email'].value,
+      password: this.loginForm.controls['password'].value,
     };
 
     // Llamar al servicio de login

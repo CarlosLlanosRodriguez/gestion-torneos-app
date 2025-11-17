@@ -1,20 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Usuario } from '../../../../core/models/usuario.model';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    RouterLink
   ],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css'
 })
-export class PerfilComponent {
+export class PerfilComponent implements OnInit {
 
   // Usuario actual
   usuario: Usuario | null = null;
