@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UsuarioService } from '../../services/usuario.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -17,7 +17,7 @@ import { UsuarioListado } from '../../models/usuario-listado.model';
   templateUrl: './formulario-usuarios.component.html',
   styleUrl: './formulario-usuarios.component.css',
 })
-export class FormularioUsuariosComponent {
+export class FormularioUsuariosComponent implements OnInit {
   usuarioForm!: FormGroup;
   passwordForm!: FormGroup;
   loading = false;

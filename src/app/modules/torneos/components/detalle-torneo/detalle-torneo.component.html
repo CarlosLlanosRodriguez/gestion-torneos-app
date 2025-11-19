@@ -1,0 +1,61 @@
+<div class="container py-4">
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+
+    <!-- Contenido -->
+    <div *ngIf="!loading && torneo">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>{{ torneo.nombre }}</h2>
+            <a routerLink="/dashboard/torneos" class="btn btn-outline-secondary">
+                ← Volver
+            </a>
+        </div>
+
+        <!-- Card -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Disciplina</label>
+                        <p class="fw-bold">{{ torneo.disciplina }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Temporada</label>
+                        <p class="fw-bold">{{ torneo.temporada }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Fecha de Inicio</label>
+                        <p class="fw-bold">{{ formatearFecha(torneo.fecha_inicio) }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Fecha de Fin</label>
+                        <p class="fw-bold">{{ formatearFecha(torneo.fecha_fin) }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Estado</label>
+                        <p>
+                            <span class="badge" [ngClass]="getEstadoBadgeClass(torneo.estado)">
+                                {{ torneo.estado | titlecase }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Equipos Inscritos</label>
+                        <p class="fw-bold">{{ torneo.total_equipos }}</p>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="text-muted">Organizador</label>
+                        <p class="fw-bold">{{ torneo.organizador_nombre }}</p>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="text-muted">Descripción</label>
+                        <p>{{ torneo.descripcion }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

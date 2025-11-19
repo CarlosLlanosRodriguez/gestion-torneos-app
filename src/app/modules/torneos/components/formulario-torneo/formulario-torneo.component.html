@@ -1,0 +1,115 @@
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ isEditMode ? 'Editar Torneo' : 'Nuevo Torneo' }}</h2>
+        <a routerLink="/dashboard/torneos" class="btn btn-outline-secondary">
+            ← Volver
+        </a>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading && isEditMode" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+
+    <!-- Formulario -->
+    <div *ngIf="!loading || !isEditMode" class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form [formGroup]="torneoForm" (ngSubmit)="onSubmit()">
+
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label class="form-label">Nombre del Torneo *</label>
+                            <input type="text" class="form-control" [class.is-invalid]="isFieldInvalid('nombre')"
+                                formControlName="nombre" placeholder="Copa Primavera 2025">
+                            <div class="invalid-feedback" *ngIf="isFieldInvalid('nombre')">
+                                {{ getErrorMessage('nombre') }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Disciplina -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Disciplina *</label>
+                                <input type="text" class="form-control"
+                                    [class.is-invalid]="isFieldInvalid('disciplina')" formControlName="disciplina"
+                                    placeholder="Fútbol">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('disciplina')">
+                                    {{ getErrorMessage('disciplina') }}
+                                </div>
+                            </div>
+
+                            <!-- Temporada -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Temporada *</label>
+                                <input type="text" class="form-control" [class.is-invalid]="isFieldInvalid('temporada')"
+                                    formControlName="temporada" placeholder="2025-1">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('temporada')">
+                                    {{ getErrorMessage('temporada') }}
+                                </div>
+                            </div>
+
+                            <!-- Fecha Inicio -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha de Inicio *</label>
+                                <input type="date" class="form-control"
+                                    [class.is-invalid]="isFieldInvalid('fecha_inicio')" formControlName="fecha_inicio">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('fecha_inicio')">
+                                    {{ getErrorMessage('fecha_inicio') }}
+                                </div>
+                            </div>
+
+                            <!-- Fecha Fin -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha de Fin *</label>
+                                <input type="date" class="form-control" [class.is-invalid]="isFieldInvalid('fecha_fin')"
+                                    formControlName="fecha_fin">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('fecha_fin')">
+                                    {{ getErrorMessage('fecha_fin') }}
+                                </div>
+                            </div>
+
+                            <!-- Estado -->
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Estado *</label>
+                                <select class="form-select" [class.is-invalid]="isFieldInvalid('estado')"
+                                    formControlName="estado">
+                                    <option *ngFor="let estado of estados" [value]="estado.value">
+                                        {{ estado.label }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('estado')">
+                                    {{ getErrorMessage('estado') }}
+                                </div>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Descripción *</label>
+                                <textarea class="form-control" [class.is-invalid]="isFieldInvalid('descripcion')"
+                                    formControlName="descripcion" rows="3"
+                                    placeholder="Descripción del torneo..."></textarea>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('descripcion')">
+                                    {{ getErrorMessage('descripcion') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary" [disabled]="loading">
+                                <span class="spinner-border spinner-border-sm me-2" *ngIf="loading"></span>
+                                {{ isEditMode ? 'Actualizar' : 'Crear' }} Torneo
+                            </button>
+                            <a routerLink="/dashboard/torneos" class="btn btn-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

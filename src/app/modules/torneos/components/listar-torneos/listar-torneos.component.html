@@ -1,0 +1,80 @@
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Torneos Deportivos</h2>
+        <a routerLink="/dashboard/torneos/nuevo" class="btn btn-primary" *ngIf="authService.isAuthenticated()">
+            + Nuevo Torneo
+        </a>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+    <!-- Listado en Cards -->
+    <div *ngIf="!loading">
+        <p class="text-muted mb-3">Total de torneos: <strong>{{ total }}</strong></p>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4" *ngFor="let torneo of torneos">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <!-- Estado -->
+                        <span class="badge mb-2" [ngClass]="getEstadoBadgeClass(torneo.estado)">
+                            {{ torneo.estado | titlecase }}
+                        </span>
+
+                        <!-- Título -->
+                        <h5 class="card-title">{{ torneo.nombre }}</h5>
+
+                        <!-- Info -->
+                        <p class="card-text text-muted small mb-2">
+                            <strong>Disciplina:</strong> {{ torneo.disciplina }}<br>
+                            <strong>Temporada:</strong> {{ torneo.temporada }}<br>
+                            <strong>Equipos:</strong> {{ torneo.total_equipos }}
+                        </p>
+
+                        <!-- Fechas -->
+                        <p class="text-muted small">
+                            📅 {{ formatearFecha(torneo.fecha_inicio) }} - {{ formatearFecha(torneo.fecha_fin) }}
+                        </p>
+
+                        <!-- Organizador -->
+                        <p class="text-muted small mb-3">
+                            👤 {{ torneo.organizador_nombre }}
+                        </p>
+
+                        <!-- Acciones -->
+                        <div class="d-flex gap-2">
+                            <a [routerLink]="['/dashboard/torneos', torneo.id]" class="btn btn-sm btn-outline-primary">
+                                Ver Detalle
+                            </a>
+
+                            <ng-container *ngIf="puedeEditar(torneo)">
+                                <a [routerLink]="['/dashboard/torneos/editar', torneo.id]"
+                                    class="btn btn-sm btn-outline-secondary">
+                                    Editar
+                                </a>
+                                <button (click)="eliminarTorneo(torneo)" class="btn btn-sm btn-outline-danger">
+                                    Eliminar
+                                </button>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sin datos -->
+        <div *ngIf="torneos.length === 0" class="text-center py-5">
+            <h4 class="text-muted">No hay torneos registrados</h4>
+            <p class="text-muted">Crea el primer torneo del sistema</p>
+            <a routerLink="/dashboard/torneos/nuevo" class="btn btn-primary" *ngIf="authService.isAuthenticated()">
+                + Crear Torneo
+            </a>
+        </div>
+    </div>
+</div>
