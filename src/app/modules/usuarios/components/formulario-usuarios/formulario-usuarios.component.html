@@ -1,0 +1,159 @@
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ isEditMode ? 'Editar Usuario' : 'Nuevo Usuario' }}</h2>
+        <a routerLink="/dashboard/usuarios" class="btn btn-outline-secondary">
+            ← Volver
+        </a>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading && isEditMode" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+    <!-- Formulario Principal -->
+    <div *ngIf="!loading || !isEditMode" class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+
+                        <div class="row">
+                            <!-- Nombre -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" [class.is-invalid]="isFieldInvalid('nombre')"
+                                    formControlName="nombre" placeholder="Juan">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('nombre')">
+                                    {{ getErrorMessage('nombre') }}
+                                </div>
+                            </div>
+
+                            <!-- Apellido -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Apellido *</label>
+                                <input type="text" class="form-control" [class.is-invalid]="isFieldInvalid('apellido')"
+                                    formControlName="apellido" placeholder="Pérez">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('apellido')">
+                                    {{ getErrorMessage('apellido') }}
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email *</label>
+                                <input type="email" class="form-control" [class.is-invalid]="isFieldInvalid('email')"
+                                    formControlName="email" placeholder="usuario@ejemplo.com">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                                    {{ getErrorMessage('email') }}
+                                </div>
+                            </div>
+
+                            <!-- Teléfono -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Teléfono *</label>
+                                <input type="text" class="form-control" [class.is-invalid]="isFieldInvalid('telefono')"
+                                    formControlName="telefono" placeholder="555-1234">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('telefono')">
+                                    {{ getErrorMessage('telefono') }}
+                                </div>
+                            </div>
+
+                            <!-- Password (solo en creación) -->
+                            <div class="col-md-6 mb-3" *ngIf="!isEditMode">
+                                <label class="form-label">Contraseña *</label>
+                                <input type="password" class="form-control"
+                                    [class.is-invalid]="isFieldInvalid('password')" formControlName="password"
+                                    placeholder="••••••••">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
+                                    {{ getErrorMessage('password') }}
+                                </div>
+                                <small class="text-muted">Mínimo 6 caracteres</small>
+                            </div>
+
+                            <!-- Rol -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Rol *</label>
+                                <select class="form-select" [class.is-invalid]="isFieldInvalid('rol_id')"
+                                    formControlName="rol_id">
+                                    <option [value]="null">Seleccione un rol</option>
+                                    <option *ngFor="let rol of roles" [value]="rol.id">
+                                        {{ rol.nombre | titlecase }} - {{ rol.descripcion }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('rol_id')">
+                                    {{ getErrorMessage('rol_id') }}
+                                </div>
+                            </div>
+
+                            <!-- Estado (solo en edición) -->
+                            <div class="col-md-6 mb-3" *ngIf="isEditMode">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" formControlName="activo">
+                                    <option [value]="true">Activo</option>
+                                    <option [value]="false">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary" [disabled]="loading">
+                                <span class="spinner-border spinner-border-sm me-2" *ngIf="loading"
+                                    role="status"></span>
+                                {{ isEditMode ? 'Actualizar' : 'Crear' }} Usuario
+                            </button>
+                            <a routerLink="/dashboard/usuarios" class="btn btn-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar: Cambiar contraseña (solo en edición) -->
+        <div class="col-md-4" *ngIf="isEditMode">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">Cambiar Contraseña</h6>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="passwordForm" (ngSubmit)="onCambiarPassword()">
+                        <div class="mb-3">
+                            <label class="form-label">Nueva Contraseña *</label>
+                            <input type="password" class="form-control"
+                                [class.is-invalid]="isFieldInvalid('password', passwordForm)" formControlName="password"
+                                placeholder="••••••••">
+                            <div class="invalid-feedback" *ngIf="isFieldInvalid('password', passwordForm)">
+                                {{ getErrorMessage('password', passwordForm) }}
+                            </div>
+                            <small class="text-muted">Mínimo 6 caracteres</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100" [disabled]="loading">
+                            <span class="spinner-border spinner-border-sm me-2" *ngIf="loading" role="status"></span>
+                            Cambiar Contraseña
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info adicional -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6>Información</h6>
+                    <ul class="small mb-0">
+                        <li>El email debe ser único</li>
+                        <li>El teléfono debe tener formato: 555-1234</li>
+                        <li>La contraseña debe tener mínimo 6 caracteres</li>
+                        <li>Los usuarios inactivos no pueden iniciar sesión</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

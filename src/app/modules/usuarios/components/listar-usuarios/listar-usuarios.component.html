@@ -1,2 +1,72 @@
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestión de Usuarios</h2>
+        <a routerLink="/dashboard/usuarios/nuevo" class="btn btn-primary">
+            + Nuevo Usuario
+        </a>
+    </div>
 
-<p>listar-usuarios works!</p>
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div *ngIf="!loading" class="card">
+        <div class="card-body">
+            <!-- Info total -->
+            <p class="text-muted mb-3">Total de usuarios: <strong>{{ total }}</strong></p>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let usuario of usuarios">
+                            <td>{{ usuario.id }}</td>
+                            <td>{{ usuario.nombre }} {{ usuario.apellido }}</td>
+                            <td>{{ usuario.email }}</td>
+                            <td>{{ usuario.telefono }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="getRoleBadgeClass(usuario.rol_nombre)">
+                                    {{ usuario.rol_nombre }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge" [ngClass]="getEstadoBadgeClass(usuario.activo)">
+                                    {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            </td>
+                            <td>
+                                <a [routerLink]="['/dashboard/usuarios/editar', usuario.id]"
+                                    class="btn btn-sm btn-outline-primary me-1">
+                                    Editar
+                                </a>
+                                <button (click)="eliminarUsuario(usuario)" class="btn btn-sm btn-outline-danger">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Sin datos -->
+                <div *ngIf="usuarios.length === 0" class="text-center py-4">
+                    <p class="text-muted">No hay usuarios registrados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
