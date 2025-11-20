@@ -1,0 +1,86 @@
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ isEditMode ? 'Editar Equipo' : 'Nuevo Equipo' }}</h2>
+        <a routerLink="/dashboard/equipos" class="btn btn-outline-secondary">← Volver</a>
+    </div>
+
+    <div *ngIf="loading && isEditMode" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+
+    <div *ngIf="!loading || !isEditMode" class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form [formGroup]="equipoForm" (ngSubmit)="onSubmit()">
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre del Equipo *</label>
+                            <input type="text" class="form-control" [class.is-invalid]="isFieldInvalid('nombre')"
+                                formControlName="nombre" placeholder="Leones FC">
+                            <div class="invalid-feedback" *ngIf="isFieldInvalid('nombre')">
+                                {{ getErrorMessage('nombre') }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Color *</label>
+                                <input type="text" class="form-control" [class.is-invalid]="isFieldInvalid('color')"
+                                    formControlName="color" placeholder="Azul">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('color')">
+                                    {{ getErrorMessage('color') }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Torneo *</label>
+                                <select class="form-select" [class.is-invalid]="isFieldInvalid('torneo_id')"
+                                    formControlName="torneo_id" [disabled]="isEditMode">
+                                    <option [value]="null">Seleccione un torneo</option>
+                                    <option *ngFor="let torneo of torneos" [value]="torneo.id">
+                                        {{ torneo.nombre }} - {{ torneo.disciplina }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('torneo_id')">
+                                    {{ getErrorMessage('torneo_id') }}
+                                </div>
+                                <small class="text-muted" *ngIf="isEditMode">
+                                    No se puede cambiar el torneo
+                                </small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Representante *</label>
+                                <input type="text" class="form-control"
+                                    [class.is-invalid]="isFieldInvalid('representante')" formControlName="representante"
+                                    placeholder="Roberto Díaz">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('representante')">
+                                    {{ getErrorMessage('representante') }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Teléfono Representante *</label>
+                                <input type="text" class="form-control"
+                                    [class.is-invalid]="isFieldInvalid('telefono_representante')"
+                                    formControlName="telefono_representante" placeholder="555-1234">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('telefono_representante')">
+                                    {{ getErrorMessage('telefono_representante') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary" [disabled]="loading">
+                                <span class="spinner-border spinner-border-sm me-2" *ngIf="loading"></span>
+                                {{ isEditMode ? 'Actualizar' : 'Crear' }} Equipo
+                            </button>
+                            <a routerLink="/dashboard/equipos" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

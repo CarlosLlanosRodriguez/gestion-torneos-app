@@ -1,0 +1,9 @@
+.table th {
+    font-weight: 600;
+    color: #495057;
+}
+
+.badge {
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}

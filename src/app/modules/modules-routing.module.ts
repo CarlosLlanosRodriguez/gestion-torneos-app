@@ -8,6 +8,9 @@ import { roleGuard } from '../core/guards/role.guard';
 import { ListarTorneosComponent } from './torneos/components/listar-torneos/listar-torneos.component';
 import { FormularioTorneoComponent } from './torneos/components/formulario-torneo/formulario-torneo.component';
 import { DetalleTorneoComponent } from './torneos/components/detalle-torneo/detalle-torneo.component';
+import { ListarEquiposComponent } from './equipos/components/listar-equipos/listar-equipos.component';
+import { FormularioEquipoComponent } from './equipos/components/formulario-equipo/formulario-equipo.component';
+import { DetalleEquipoComponent } from './equipos/components/detalle-equipo/detalle-equipo.component';
 
 const routes: Routes = [
   {
@@ -67,6 +70,35 @@ const routes: Routes = [
             component: DetalleTorneoComponent,
             canActivate: [authGuard],
             title: 'Detalle del Torneo',
+          },
+        ],
+      },
+      {
+        path: 'equipos',
+        children: [
+          {
+            path: '',
+            component: ListarEquiposComponent,
+            canActivate: [authGuard],
+            title: 'Gestión de Equipos',
+          },
+          {
+            path: 'nuevo',
+            component: FormularioEquipoComponent,
+            canActivate: [authGuard],
+            title: 'Nuevo Equipo',
+          },
+          {
+            path: 'editar/:id',
+            component: FormularioEquipoComponent,
+            canActivate: [authGuard],
+            title: 'Editar Equipo',
+          },
+          {
+            path: ':id',
+            component: DetalleEquipoComponent,
+            canActivate: [authGuard],
+            title: 'Detalle de Equipo',
           },
         ],
       },
