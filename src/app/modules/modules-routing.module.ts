@@ -14,6 +14,9 @@ import { DetalleEquipoComponent } from './equipos/components/detalle-equipo/deta
 import { ListarJugadoresComponent } from './jugadores/components/listar-jugadores/listar-jugadores.component';
 import { FormularioJugadorComponent } from './jugadores/components/formulario-jugador/formulario-jugador.component';
 import { DetalleJugadorComponent } from './jugadores/components/detalle-jugador/detalle-jugador.component';
+import { ListarPartidosComponent } from './partidos/components/listar-partidos/listar-partidos.component';
+import { FormularioPartidoComponent } from './partidos/components/formulario-partido/formulario-partido.component';
+import { DetallePartidoComponent } from './partidos/components/detalle-partido/detalle-partido.component';
 
 const routes: Routes = [
   {
@@ -131,6 +134,35 @@ const routes: Routes = [
             component: DetalleJugadorComponent,
             canActivate: [authGuard],
             title: 'Detalle del Jugador',
+          },
+        ],
+      },
+      {
+        path: 'partidos',
+        children: [
+          {
+            path: '',
+            component: ListarPartidosComponent,
+            canActivate: [authGuard],
+            title: 'Gestión de Partidos',
+          },
+          {
+            path: 'nuevo',
+            component: FormularioPartidoComponent,
+            canActivate: [authGuard],
+            title: 'Nuevo Partido',
+          },
+          {
+            path: 'editar/:id',
+            component: FormularioPartidoComponent,
+            canActivate: [authGuard],
+            title: 'Editar Partido',
+          },
+          {
+            path: ':id',
+            component: DetallePartidoComponent,
+            canActivate: [authGuard],
+            title: 'Detalle del Partido',
           },
         ],
       },

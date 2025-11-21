@@ -1,0 +1,126 @@
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ isEditMode ? 'Editar Partido' : 'Nuevo Partido' }}</h2>
+        <a routerLink="/dashboard/partidos" class="btn btn-outline-secondary">← Volver</a>
+    </div>
+
+    <div *ngIf="loading && isEditMode" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+
+    <div *ngIf="!loading || !isEditMode" class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body">
+                    <form [formGroup]="partidoForm" (ngSubmit)="onSubmit()">
+
+                        <div class="row">
+                            <!-- Torneo -->
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Torneo *</label>
+                                <select class="form-select" [class.is-invalid]="isFieldInvalid('torneo_id')"
+                                    formControlName="torneo_id" [disabled]="isEditMode">
+                                    <option [value]="null">Seleccione un torneo</option>
+                                    <option *ngFor="let torneo of torneos" [value]="torneo.id">
+                                        {{ torneo.nombre }} - {{ torneo.disciplina }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('torneo_id')">
+                                    {{ getErrorMessage('torneo_id') }}
+                                </div>
+                                <small class="text-muted" *ngIf="isEditMode">No se puede cambiar el torneo</small>
+                            </div>
+
+                            <!-- Equipo Local -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Equipo Local *</label>
+                                <select class="form-select" [class.is-invalid]="isFieldInvalid('equipo_local_id')"
+                                    formControlName="equipo_local_id" [disabled]="isEditMode">
+                                    <option [value]="null">Seleccione equipo</option>
+                                    <option *ngFor="let equipo of equiposFiltrados" [value]="equipo.id">
+                                        {{ equipo.nombre }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('equipo_local_id')">
+                                    {{ getErrorMessage('equipo_local_id') }}
+                                </div>
+                            </div>
+
+                            <!-- Equipo Visitante -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Equipo Visitante *</label>
+                                <select class="form-select" [class.is-invalid]="isFieldInvalid('equipo_visitante_id')"
+                                    formControlName="equipo_visitante_id" [disabled]="isEditMode">
+                                    <option [value]="null">Seleccione equipo</option>
+                                    <option *ngFor="let equipo of equiposFiltrados" [value]="equipo.id">
+                                        {{ equipo.nombre }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('equipo_visitante_id')">
+                                    {{ getErrorMessage('equipo_visitante_id') }}
+                                </div>
+                            </div>
+
+                            <!-- Fecha -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha y Hora *</label>
+                                <input type="datetime-local" class="form-control"
+                                    [class.is-invalid]="isFieldInvalid('fecha')" formControlName="fecha">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('fecha')">
+                                    {{ getErrorMessage('fecha') }}
+                                </div>
+                            </div>
+
+                            <!-- Lugar -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Lugar *</label>
+                                <input type="text" class="form-control" [class.is-invalid]="isFieldInvalid('lugar')"
+                                    formControlName="lugar" placeholder="Estadio Municipal">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('lugar')">
+                                    {{ getErrorMessage('lugar') }}
+                                </div>
+                            </div>
+
+                            <!-- Marcador Local -->
+                            <div class="col-md-4 mb-3" *ngIf="isEditMode">
+                                <label class="form-label">Marcador Local</label>
+                                <input type="number" class="form-control" formControlName="marcador_local" min="0">
+                            </div>
+
+                            <!-- Marcador Visitante -->
+                            <div class="col-md-4 mb-3" *ngIf="isEditMode">
+                                <label class="form-label">Marcador Visitante</label>
+                                <input type="number" class="form-control" formControlName="marcador_visitante" min="0">
+                            </div>
+
+                            <!-- Estado -->
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Estado *</label>
+                                <select class="form-select" formControlName="estado">
+                                    <option *ngFor="let estado of estados" [value]="estado.value">
+                                        {{ estado.label }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Observaciones -->
+                            <div class="col-md-12 mb-3" *ngIf="isEditMode">
+                                <label class="form-label">Observaciones</label>
+                                <textarea class="form-control" formControlName="observaciones" rows="2"
+                                    placeholder="Observaciones opcionales..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary" [disabled]="loading">
+                                <span class="spinner-border spinner-border-sm me-2" *ngIf="loading"></span>
+                                {{ isEditMode ? 'Actualizar' : 'Crear' }} Partido
+                            </button>
+                            <a routerLink="/dashboard/partidos" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
