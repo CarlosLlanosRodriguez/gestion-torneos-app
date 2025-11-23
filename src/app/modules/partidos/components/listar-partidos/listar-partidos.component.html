@@ -54,6 +54,10 @@
                                 <button (click)="eliminarPartido(partido)" class="btn btn-sm btn-outline-danger">
                                     Eliminar
                                 </button>
+                                <a [routerLink]="['/dashboard/eventos/partido', partido.id, 'nuevo']"
+                                    class="btn btn-sm btn-outline-success me-1">
+                                    Nuevo Evento
+                                </a>
                             </ng-container>
                         </div>
                     </div>

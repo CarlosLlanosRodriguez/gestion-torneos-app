@@ -17,6 +17,8 @@ import { DetalleJugadorComponent } from './jugadores/components/detalle-jugador/
 import { ListarPartidosComponent } from './partidos/components/listar-partidos/listar-partidos.component';
 import { FormularioPartidoComponent } from './partidos/components/formulario-partido/formulario-partido.component';
 import { DetallePartidoComponent } from './partidos/components/detalle-partido/detalle-partido.component';
+import { ListarEventosComponent } from './eventos/components/listar-eventos/listar-eventos.component';
+import { FormularioEventoComponent } from './eventos/components/formulario-evento/formulario-evento.component';
 
 const routes: Routes = [
   {
@@ -164,6 +166,35 @@ const routes: Routes = [
             canActivate: [authGuard],
             title: 'Detalle del Partido',
           },
+        ],
+      },
+      {
+        path: 'eventos',
+        children: [
+          {
+            path: '',
+            component: ListarEventosComponent,
+            canActivate: [authGuard],
+            title: 'Gestión de Eventos',
+          },
+          {
+            path: 'partido/:partidoId/nuevo',
+            component: FormularioEventoComponent,
+            canActivate: [authGuard],
+            title: 'Nuevo Evento',
+          },
+          {
+            path: 'editar/:id',
+            component: FormularioEventoComponent,
+            canActivate: [authGuard],
+            title: 'Editar Evento',
+          },
+          /* {
+            path: ':id',
+            component: DetallePartidoComponent,
+            canActivate: [authGuard],
+            title: 'Detalle del Partido',
+          }, */
         ],
       },
     ],

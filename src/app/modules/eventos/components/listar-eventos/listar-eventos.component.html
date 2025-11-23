@@ -1,0 +1,74 @@
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Eventos de Partidos</h2>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+
+    <!-- Listado -->
+    <div *ngIf="!loading">
+        <p class="text-muted mb-3">Total de eventos: <strong>{{ total }}</strong></p>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Partido</th>
+                        <th>Jugador</th>
+                        <th>Tipo</th>
+                        <th>Min</th>
+                        <th>Descripción</th>
+                        <th *ngIf="authService.isAuthenticated()">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let evento of eventos">
+                        <td>
+                            <small>{{ formatearFecha(evento.partido_fecha) }}</small>
+                        </td>
+                        <td>
+                            <small>{{ evento.equipo_local }} vs {{ evento.equipo_visitante }}</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary me-1">#{{ evento.nro_camiseta }}</span>
+                            <strong>{{ evento.jugador_nombre }}</strong><br>
+                            <small class="text-muted">{{ evento.equipo_jugador }}</small>
+                        </td>
+                        <td>
+                            <span [innerHTML]="getTipoIcon(evento.tipo)"></span>
+                        </td>
+                        <td>
+                            <strong>{{ evento.minuto }}'</strong>
+                        </td>
+                        <td>
+                            <small>{{ evento.descripcion }}</small>
+                        </td>
+                        <td *ngIf="authService.isAuthenticated()">
+                            <a [routerLink]="['/dashboard/eventos/editar', evento.id]"
+                                class="btn btn-sm btn-outline-secondary me-1">
+                                Editar
+                            </a>
+                            <button (click)="eliminarEvento(evento)" class="btn btn-sm btn-outline-danger">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Sin datos -->
+            <div *ngIf="eventos.length === 0" class="text-center py-5">
+                <h4 class="text-muted">No hay eventos registrados</h4>
+                <p class="text-muted">Los eventos se registran desde el detalle de cada partido</p>
+                <a routerLink="/partidos" class="btn btn-primary">
+                    Ver Partidos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,153 @@
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ isEditMode ? 'Editar Evento' : 'Registrar Evento' }}</h2>
+        <a [routerLink]="partidoId ? ['/dashboard/partidos', partidoId] : ['/dashboard/eventos']" class="btn btn-outline-secondary">
+            ← Volver
+        </a>
+    </div>
+
+    <!-- Info del Partido -->
+    <div *ngIf="partido && !loadingData" class="alert alert-info mb-4">
+        <h6 class="mb-2">📋 Partido:</h6>
+        <strong>{{ partido.equipo_local_nombre }}</strong>
+        <span class="badge bg-primary">{{ partido.marcador_local }}</span>
+        vs
+        <span class="badge bg-primary">{{ partido.marcador_visitante }}</span>
+        <strong>{{ partido.equipo_visitante_nombre }}</strong>
+        <br>
+        <small class="text-muted">
+            {{ partido.torneo_nombre }} - {{ partido.lugar }}
+        </small>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading && isEditMode" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+        <p class="text-muted mt-3">Cargando evento...</p>
+    </div>
+
+    <div *ngIf="loadingData && !isEditMode" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+        <p class="text-muted mt-3">Cargando datos del partido...</p>
+    </div>
+
+    <!-- Formulario -->
+    <div *ngIf="!loading && !loadingData" class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form [formGroup]="eventoForm" (ngSubmit)="onSubmit()">
+
+                        <!-- Campo oculto partido_id -->
+                        <input type="hidden" formControlName="partido_id">
+
+                        <div class="row">
+                            <!-- Jugador -->
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Jugador *</label>
+                                <select class="form-select" [class.is-invalid]="isFieldInvalid('jugador_id')"
+                                    formControlName="jugador_id" [disabled]="isEditMode">
+                                    <option [value]="null">Seleccione un jugador</option>
+
+                                    <!-- Jugadores del equipo local -->
+                                    <optgroup *ngIf="partido" [label]="partido.equipo_local_nombre + ' (Local)'">
+                                        <option *ngFor="let jugador of getJugadoresPorEquipo(partido.equipo_local_id)"
+                                            [value]="jugador.id">
+                                            #{{ jugador.nro_camiseta }} - {{ jugador.nombre }} {{ jugador.apellido }}
+                                            ({{ jugador.posicion }})
+                                        </option>
+                                    </optgroup>
+
+                                    <!-- Jugadores del equipo visitante -->
+                                    <optgroup *ngIf="partido"
+                                        [label]="partido.equipo_visitante_nombre + ' (Visitante)'">
+                                        <option
+                                            *ngFor="let jugador of getJugadoresPorEquipo(partido.equipo_visitante_id)"
+                                            [value]="jugador.id">
+                                            #{{ jugador.nro_camiseta }} - {{ jugador.nombre }} {{ jugador.apellido }}
+                                            ({{ jugador.posicion }})
+                                        </option>
+                                    </optgroup>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('jugador_id')">
+                                    {{ getErrorMessage('jugador_id') }}
+                                </div>
+                                <small class="text-muted" *ngIf="isEditMode">
+                                    ℹ️ No se puede cambiar el jugador en modo edición
+                                </small>
+                                <small class="text-muted" *ngIf="!isEditMode && jugadoresDelPartido.length === 0">
+                                    ⏳ Cargando jugadores del partido...
+                                </small>
+                                <small class="text-muted" *ngIf="!isEditMode && jugadoresDelPartido.length > 0">
+                                    ✓ {{ jugadoresDelPartido.length }} jugadores disponibles
+                                </small>
+                            </div>
+
+                            <!-- Tipo de Evento -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tipo de Evento *</label>
+                                <select class="form-select" [class.is-invalid]="isFieldInvalid('tipo')"
+                                    formControlName="tipo">
+                                    <option *ngFor="let tipo of tiposEvento" [value]="tipo.value">
+                                        {{ getTipoIcon(tipo.value) }} {{ tipo.label }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('tipo')">
+                                    {{ getErrorMessage('tipo') }}
+                                </div>
+                            </div>
+
+                            <!-- Minuto -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Minuto *</label>
+                                <input type="number" class="form-control" [class.is-invalid]="isFieldInvalid('minuto')"
+                                    formControlName="minuto" placeholder="45" min="1" max="120">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('minuto')">
+                                    {{ getErrorMessage('minuto') }}
+                                </div>
+                                <small class="text-muted">Del minuto 1 al 120 (incluye tiempos extra)</small>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Descripción *</label>
+                                <textarea class="form-control" [class.is-invalid]="isFieldInvalid('descripcion')"
+                                    formControlName="descripcion" rows="3"
+                                    placeholder="Ej: Gol de cabeza tras centro desde la banda derecha"></textarea>
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('descripcion')">
+                                    {{ getErrorMessage('descripcion') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary" [disabled]="loading">
+                                <span class="spinner-border spinner-border-sm me-2" *ngIf="loading"></span>
+                                {{ isEditMode ? 'Actualizar' : 'Registrar' }} Evento
+                            </button>
+                            <a [routerLink]="partidoId ? ['/dashboard/partidos', partidoId] : ['/dashboard/eventos']"
+                                class="btn btn-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info adicional -->
+            <div class="card mt-3" *ngIf="!isEditMode">
+                <div class="card-body">
+                    <h6>📌 Tipos de Eventos:</h6>
+                    <div class="row">
+                        <div class="col-md-6" *ngFor="let tipo of tiposEvento">
+                            <span [style.color]="tipo.color" class="me-2">{{ tipo.icon }}</span>
+                            <strong>{{ tipo.label }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
